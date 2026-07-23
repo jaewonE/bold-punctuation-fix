@@ -1,6 +1,18 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { transformMarkdown } from '../src/transform';
+import {
+	isAutoFixTrigger,
+	transformMarkdown,
+	transformMarkdownLine,
+	type MarkdownLineSource,
+} from '../src/transform';
+
+function lineSource(lines: string[]): MarkdownLineSource {
+	return {
+		getLine: (line) => lines[line]!,
+		lineCount: () => lines.length,
+	};
+}
 
 test('moves quotation marks outside an unsafe strong span', () => {
 	const result = transformMarkdown('나는 **"레브잇"**으로 식별했다.');
@@ -71,4 +83,35 @@ test('processes a large note without touching its protected code spans', () => {
 
 	assert.equal(result.replacements, 10_000);
 	assert.equal(result.text.includes('`**"코드"**으로`'), true);
+});
+
+test('recognizes only delimiter-completion events as automatic-fix triggers', () => {
+	assert.equal(isAutoFixTrigger('가**"레브잇"**', '가**"레브잇"**'.length), true);
+	assert.equal(isAutoFixTrigger('**"레브잇"**으', '**"레브잇"**으'.length), true);
+	assert.equal(isAutoFixTrigger('이미 작성한 문장', '이미 작성한 문장'.length), false);
+});
+
+test('repairs only the active line without copying the entire note', () => {
+	const lines = ['첫 줄은 변경하지 않는다.', '나는 **"안녕하세요"**라고 말했다.', '마지막 줄도 유지한다.'];
+	const result = transformMarkdownLine(lineSource(lines), 1);
+
+	assert.deepEqual(result, {
+		text: '나는 "**안녕하세요**"라고 말했다.',
+		replacements: 1,
+	});
+	assert.equal(result.text.length, lines[1]!.length);
+});
+
+test('skips frontmatter and fenced code blocks during automatic line correction', () => {
+	const frontmatter = ['---', 'title: **"안녕하세요"**라고', '---', '본문'];
+	const fence = ['```md', '**"안녕하세요"**라고', '```', '본문'];
+
+	assert.deepEqual(transformMarkdownLine(lineSource(frontmatter), 1), {
+		text: 'title: **"안녕하세요"**라고',
+		replacements: 0,
+	});
+	assert.deepEqual(transformMarkdownLine(lineSource(fence), 1), {
+		text: '**"안녕하세요"**라고',
+		replacements: 0,
+	});
 });

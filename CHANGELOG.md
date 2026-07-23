@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+- Automatically repair punctuation-bound bold syntax on the active editor line after relevant typing pauses.
+- Preserve frontmatter, fenced code blocks, inline code, links, Wikilinks, escaped delimiters, and normal strong spans.
+- Remove the manual correction command; automatic correction is always enabled.
+
 ## 1.0.2
 
 - Use English examples in the English README and license the plugin under GPL-3.0-only.

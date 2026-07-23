@@ -8,6 +8,11 @@ interface ProtectedRange {
 	end: number;
 }
 
+export interface MarkdownLineSource {
+	getLine(line: number): string;
+	lineCount(): number;
+}
+
 const ASCII_PUNCTUATION = /^[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]$/;
 const UNICODE_PUNCTUATION = /^\p{P}$/u;
 const WHITESPACE = /^\s$/u;
@@ -22,6 +27,61 @@ const WHITESPACE = /^\s$/u;
  */
 export function transformMarkdown(text: string): TransformResult {
 	const protectedRanges = findProtectedRanges(text);
+	return rewriteStrongSpans(
+		text,
+		protectedRanges,
+		(opening) => previousCodePoint(text, opening),
+		(closing) => nextCodePoint(text, closing + 2),
+	);
+}
+
+/**
+ * Returns whether an edit immediately follows a completed strong delimiter.
+ * This cheap check avoids scanning the document for ordinary typing.
+ */
+export function isAutoFixTrigger(line: string, cursorCh: number): boolean {
+	return (
+		(cursorCh >= 2 && line[cursorCh - 2] === '*' && line[cursorCh - 1] === '*') ||
+		(cursorCh >= 3 && line[cursorCh - 3] === '*' && line[cursorCh - 2] === '*')
+	);
+}
+
+/**
+ * Transforms one physical line while preserving the document-level protection
+ * of YAML frontmatter and fenced code blocks. The caller supplies the editor
+ * as a line source, so no full-note copy or persistent document cache is kept.
+ */
+export function transformMarkdownLine(
+	source: MarkdownLineSource,
+	line: number,
+): TransformResult {
+	if (line < 0 || line >= source.lineCount()) {
+		return { text: '', replacements: 0 };
+	}
+
+	const text = source.getLine(line);
+	if (isProtectedDocumentLine(source, line)) {
+		return { text, replacements: 0 };
+	}
+
+	const protectedRanges = findProtectedRanges(text);
+	return rewriteStrongSpans(
+		text,
+		protectedRanges,
+		(opening) => (opening === 0 && line > 0 ? '\n' : previousCodePoint(text, opening)),
+		(closing) =>
+			closing + 2 === text.length && line + 1 < source.lineCount()
+				? '\n'
+				: nextCodePoint(text, closing + 2),
+	);
+}
+
+function rewriteStrongSpans(
+	text: string,
+	protectedRanges: ProtectedRange[],
+	beforeOpening: (opening: number) => string | undefined,
+	afterClosing: (closing: number) => string | undefined,
+): TransformResult {
 	const delimiters = collectStrongDelimiters(text, protectedRanges);
 	const output: string[] = [];
 	let cursor = 0;
@@ -33,8 +93,8 @@ export function transformMarkdown(text: string): TransformResult {
 		const original = text.slice(opening, closing + 2);
 		const replacement = rewriteStrongSpan(
 			original,
-			previousCodePoint(text, opening),
-			nextCodePoint(text, closing + 2),
+			beforeOpening(opening),
+			afterClosing(closing),
 		);
 
 		if (replacement === original) {
@@ -52,6 +112,70 @@ export function transformMarkdown(text: string): TransformResult {
 
 	output.push(text.slice(cursor));
 	return { text: output.join(''), replacements };
+}
+
+function isProtectedDocumentLine(source: MarkdownLineSource, line: number): boolean {
+	return isLineInFrontmatter(source, line) || isLineInFencedCodeBlock(source, line);
+}
+
+function isLineInFrontmatter(source: MarkdownLineSource, line: number): boolean {
+	if (source.lineCount() === 0 || source.getLine(0) !== '---') {
+		return false;
+	}
+
+	for (let index = 1; index < source.lineCount(); index += 1) {
+		const value = source.getLine(index).trim();
+		if (value === '---' || value === '...') {
+			return line <= index;
+		}
+	}
+
+	return false;
+}
+
+function isLineInFencedCodeBlock(source: MarkdownLineSource, targetLine: number): boolean {
+	let fence: { character: string; length: number } | undefined;
+
+	for (let line = 0; line <= targetLine; line += 1) {
+		const value = source.getLine(line);
+		if (fence) {
+			if (line === targetLine) {
+				return true;
+			}
+
+			if (isClosingFence(value, fence)) {
+				fence = undefined;
+			}
+			continue;
+		}
+
+		const openingFence = value.match(/^ {0,3}(`{3,}|~{3,})/u);
+		if (!openingFence) {
+			continue;
+		}
+
+		if (line === targetLine) {
+			return true;
+		}
+
+		fence = {
+			character: openingFence[1]![0]!,
+			length: openingFence[1]!.length,
+		};
+	}
+
+	return false;
+}
+
+function isClosingFence(
+	line: string,
+	fence: { character: string; length: number },
+): boolean {
+	const closingPattern = new RegExp(
+		`^ {0,3}${escapeForRegex(fence.character)}{${fence.length},}\\s*$`,
+		'u',
+	);
+	return closingPattern.test(line);
 }
 
 function rewriteStrongSpan(

@@ -1,9 +1,9 @@
 {
 	"id": "bold-punctuation-fix",
 	"name": "Bold Punctuation Fix",
-	"version": "1.0.2",
-	"minAppVersion": "1.0.0",
-	"description": "An Obsidian plugin that repairs Markdown bold markers adjacent to punctuation.",
+	"version": "1.1.0",
+	"minAppVersion": "1.1.1",
+	"description": "An Obsidian plugin that automatically repairs punctuation-bound Markdown bold markers while you type.",
 	"author": "JaewonE",
 	"authorUrl": "https://github.com/jaewonE",
 	"isDesktopOnly": false

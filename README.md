@@ -2,11 +2,12 @@
 
 [ [English](https://github.com/jaewonE/bold-punctuation-fix) | [한국어](https://github.com/jaewonE/bold-punctuation-fix/blob/master/README.ko.md) ]
 
-Bold Punctuation Fix is an Obsidian plugin that repairs Markdown bold spans whose boundary punctuation makes `**` delimiters parse incorrectly. It uses Markdown-only source replacements and never inserts HTML tags.
+Bold Punctuation Fix is an Obsidian plugin that automatically repairs Markdown bold spans whose boundary punctuation makes `**` delimiters parse incorrectly while you type. It uses Markdown-only source replacements and never inserts HTML tags.
 
 ## Features
 
-- Fixes the current note on demand; it does not watch the editor or scan the vault.
+- Automatically fixes only the edited line after a completed `**` delimiter or text immediately following it.
+- Waits 350 ms after relevant typing stops, without a command or a setting to enable the behavior.
 - Moves leading and trailing punctuation outside an unsafe `**...**` span.
 - Converts `I said **"hello"** to everyone.` to `I said "**hello**" to everyone.`.
 - Supports ASCII, typographic, and CJK punctuation.
@@ -16,7 +17,7 @@ Bold Punctuation Fix is an Obsidian plugin that repairs Markdown bold spans whos
 
 ## How it works
 
-The command identifies literal, exact `**...**` spans outside protected Markdown regions. If either delimiter is unsafe because punctuation is adjacent to text, all movable boundary punctuation is placed outside the bold span. Only the inner text remains bold.
+After relevant typing pauses, the plugin identifies literal, exact `**...**` spans on the active line outside protected Markdown regions. If either delimiter is unsafe because punctuation is adjacent to text, all movable boundary punctuation is placed outside the bold span. Only the inner text remains bold.
 
 Examples:
 
@@ -38,24 +39,12 @@ Plan(**today**)
 
 ## Usage
 
-1. Open the Markdown note to repair.
-2. Open the Command Palette.
-3. Run **Fix punctuation-bound bold syntax in current note**.
-4. Review the resulting Markdown before saving.
+1. Enable Bold Punctuation Fix.
+2. Type a punctuation-bound bold span in a Markdown editor.
+3. Finish the closing `**`, or type text immediately after it.
+4. After 350 ms without relevant typing, review the automatic correction.
 
-The command only changes the active editor. If a result is not wanted, use Obsidian's **Undo** immediately. For important notes, retain your normal vault backup or version-history workflow before applying any text transformation.
-
-## Commands and hotkeys
-
-| Command | Default hotkey |
-| --- | --- |
-| Fix punctuation-bound bold syntax in current note | None |
-
-You can assign a shortcut in **Settings → Hotkeys**.
-
-## Settings
-
-Version `1.0.2` has no settings. The plugin stores no configuration or note data.
+The plugin changes only the active editor line that triggered the correction. If a result is not wanted, use Obsidian's **Undo** immediately. The plugin recognizes that undo and does not immediately reapply the same correction. For important notes, retain your normal vault backup or version-history workflow before applying any text transformation.
 
 ## Privacy and network access
 
@@ -63,12 +52,13 @@ Bold Punctuation Fix runs entirely locally.
 
 - It makes no network requests and uses no telemetry.
 - It does not read files outside the current vault.
-- It does not scan the vault or run in the background.
-- When invoked, it reads the active editor text and replaces only that editor's text.
+- It does not scan the vault or poll in the background.
+- It observes the active Markdown editor after relevant input and replaces only the affected line.
+- It stores no settings or note data; pending timers and undo guards are kept only in memory for open editors.
 
 ## Mobile and desktop support
 
-`isDesktopOnly` is `false`. The command uses only mobile-compatible Obsidian editor APIs and can be run from the mobile command palette.
+`isDesktopOnly` is `false`. The plugin uses mobile-compatible Obsidian editor APIs and supports Obsidian `1.1.1` and later on both mobile and desktop.
 
 ## Installation
 
