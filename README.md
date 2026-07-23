@@ -2,13 +2,13 @@
 
 [ [English](https://github.com/jaewonE/bold-punctuation-fix) | [한국어](https://github.com/jaewonE/bold-punctuation-fix/blob/master/README.ko.md) ]
 
-Bold Punctuation Fix repairs Obsidian Markdown bold spans whose boundary punctuation makes `**` delimiters parse incorrectly. It uses Markdown-only source replacements and never inserts HTML tags.
+Bold Punctuation Fix is an Obsidian plugin that repairs Markdown bold spans whose boundary punctuation makes `**` delimiters parse incorrectly. It uses Markdown-only source replacements and never inserts HTML tags.
 
 ## Features
 
 - Fixes the current note on demand; it does not watch the editor or scan the vault.
 - Moves leading and trailing punctuation outside an unsafe `**...**` span.
-- Converts `나는 **"안녕하세요"**라고` to `나는 "**안녕하세요**"라고`.
+- Converts `I said **"hello"** to everyone.` to `I said "**hello**" to everyone.`.
 - Supports ASCII, typographic, and CJK punctuation.
 - Leaves normal strong spans unchanged when their surrounding context is already valid.
 - Skips YAML frontmatter, fenced code blocks, inline code, escaped delimiters, Markdown links, Wikilinks, and `***` delimiter runs.
@@ -21,17 +21,17 @@ The command identifies literal, exact `**...**` spans outside protected Markdown
 Examples:
 
 ```markdown
-나는 **"안녕하세요"**라고 말했다.
-가**(오늘)**
-**「메모」**라고
+I said **"hello"** to everyone.
+Plan**(today)**
+**[Reminder]** on the board
 ```
 
 becomes:
 
 ```markdown
-나는 "**안녕하세요**"라고 말했다.
-가(**오늘**)
-「**메모**」라고
+I said "**hello**" to everyone.
+Plan(**today**)
+[**Reminder**] on the board
 ```
 
 `™`, `©`, and emoji are not treated as punctuation boundaries by this transformation. The plugin also deliberately leaves boundary `*`, `_`, backslashes, and backticks untouched because they can form other Markdown syntax.
@@ -55,7 +55,7 @@ You can assign a shortcut in **Settings → Hotkeys**.
 
 ## Settings
 
-Version `1.0.0` has no settings. The plugin stores no configuration or note data.
+Version `1.0.2` has no settings. The plugin stores no configuration or note data.
 
 ## Privacy and network access
 
@@ -107,4 +107,4 @@ npm run build
 
 ## License
 
-0BSD. See [LICENSE](LICENSE).
+GNU General Public License v3.0 only. See [LICENSE](LICENSE).

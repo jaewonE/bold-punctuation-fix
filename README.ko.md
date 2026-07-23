@@ -2,7 +2,7 @@
 
 [ [English](https://github.com/jaewonE/bold-punctuation-fix) | [한국어](https://github.com/jaewonE/bold-punctuation-fix/blob/master/README.ko.md) ]
 
-Bold Punctuation Fix는 문장부호 경계 때문에 `**` 표지가 잘못 해석되는 Obsidian Markdown 굵게 구간을 고칩니다. HTML 태그를 넣지 않고 Markdown 원문만 대치합니다.
+Bold Punctuation Fix는 문장부호 경계 때문에 `**` 표지가 잘못 해석되는 Obsidian Markdown 굵게 구간을 고치는 Obsidian 플러그인입니다. HTML 태그를 넣지 않고 Markdown 원문만 대치합니다.
 
 ## 기능
 
@@ -55,7 +55,7 @@ Bold Punctuation Fix는 문장부호 경계 때문에 `**` 표지가 잘못 해�
 
 ## 설정
 
-`1.0.0`에는 설정이 없습니다. 플러그인은 설정이나 노트 데이터를 저장하지 않습니다.
+`1.0.2`에는 설정이 없습니다. 플러그인은 설정이나 노트 데이터를 저장하지 않습니다.
 
 ## 개인정보와 네트워크 접근
 
@@ -107,4 +107,4 @@ npm run build
 
 ## 라이선스
 
-0BSD. [LICENSE](LICENSE)를 참고하십시오.
+GNU General Public License v3.0 only. [LICENSE](LICENSE)를 참고하십시오.

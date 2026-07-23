@@ -1,7 +1,7 @@
 {
 	"name": "bold-punctuation-fix",
-	"version": "1.0.1",
-	"description": "Repair Markdown bold markers adjacent to punctuation by moving boundary punctuation outside the bold span.",
+	"version": "1.0.2",
+	"description": "An Obsidian plugin that repairs Markdown bold markers adjacent to punctuation.",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
@@ -20,7 +20,7 @@
 	],
 	"author": "JaewonE",
 	"homepage": "https://github.com/jaewonE/bold-punctuation-fix",
-	"license": "0-BSD",
+	"license": "GPL-3.0-only",
 	"devDependencies": {
 		"@eslint/js": "^9.39.4",
 		"@types/node": "^22.15.17",

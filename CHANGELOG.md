@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Use English examples in the English README and license the plugin under GPL-3.0-only.
+- Clarify in documentation and repository metadata that this is an Obsidian plugin.
+
 ## 1.0.1
 
 - Replace product-specific documentation examples with everyday plain text.
