@@ -8,7 +8,7 @@ Bold Punctuation Fix repairs Obsidian Markdown bold spans whose boundary punctua
 
 - Fixes the current note on demand; it does not watch the editor or scan the vault.
 - Moves leading and trailing punctuation outside an unsafe `**...**` span.
-- Converts `나는 **"레브잇"**으로` to `나는 "**레브잇**"으로`.
+- Converts `나는 **"안녕하세요"**라고` to `나는 "**안녕하세요**"라고`.
 - Supports ASCII, typographic, and CJK punctuation.
 - Leaves normal strong spans unchanged when their surrounding context is already valid.
 - Skips YAML frontmatter, fenced code blocks, inline code, escaped delimiters, Markdown links, Wikilinks, and `***` delimiter runs.
@@ -21,17 +21,17 @@ The command identifies literal, exact `**...**` spans outside protected Markdown
 Examples:
 
 ```markdown
-나는 **"레브잇"**으로 식별했다.
-가**(레브잇)**
-**「레브잇」**으로
+나는 **"안녕하세요"**라고 말했다.
+가**(오늘)**
+**「메모」**라고
 ```
 
 becomes:
 
 ```markdown
-나는 "**레브잇**"으로 식별했다.
-가(**레브잇**)
-「**레브잇**」으로
+나는 "**안녕하세요**"라고 말했다.
+가(**오늘**)
+「**메모**」라고
 ```
 
 `™`, `©`, and emoji are not treated as punctuation boundaries by this transformation. The plugin also deliberately leaves boundary `*`, `_`, backslashes, and backticks untouched because they can form other Markdown syntax.

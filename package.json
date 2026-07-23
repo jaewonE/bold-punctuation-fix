@@ -1,6 +1,6 @@
 {
 	"name": "bold-punctuation-fix",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Repair Markdown bold markers adjacent to punctuation by moving boundary punctuation outside the bold span.",
 	"main": "main.js",
 	"type": "module",

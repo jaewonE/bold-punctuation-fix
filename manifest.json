@@ -1,7 +1,7 @@
 {
 	"id": "bold-punctuation-fix",
 	"name": "Bold Punctuation Fix",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "1.0.0",
 	"description": "Repair Markdown bold markers adjacent to punctuation by moving boundary punctuation outside the bold span.",
 	"author": "JaewonE",

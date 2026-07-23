@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Replace product-specific documentation examples with everyday plain text.
+
 ## 1.0.0
 
 - Add a command that repairs punctuation-bound Markdown bold syntax in the active note without inserting HTML.
