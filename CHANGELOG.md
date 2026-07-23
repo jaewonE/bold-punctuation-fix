@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- Preserve editor cursor and selections after automatic corrections.
+- Repair an active document when it opens and only the affected line range after a text paste.
+
 ## 1.1.0
 
 - Automatically repair punctuation-bound bold syntax on the active editor line after relevant typing pauses.

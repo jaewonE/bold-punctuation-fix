@@ -4,6 +4,7 @@ import {
 	isAutoFixTrigger,
 	transformMarkdown,
 	transformMarkdownLine,
+	transformMarkdownLines,
 	type MarkdownLineSource,
 } from '../src/transform';
 
@@ -113,5 +114,29 @@ test('skips frontmatter and fenced code blocks during automatic line correction'
 	assert.deepEqual(transformMarkdownLine(lineSource(fence), 1), {
 		text: '**"안녕하세요"**라고',
 		replacements: 0,
+	});
+});
+
+test('repairs only the pasted line range and retains protected code', () => {
+	const lines = [
+		'첫 줄은 유지한다.',
+		'나는 **"안녕하세요"**라고 말했다.',
+		'```md',
+		'**"코드"**라고',
+		'```',
+		'**(오늘)**을 기록했다.',
+		'마지막 줄은 유지한다.',
+	];
+	const result = transformMarkdownLines(lineSource(lines), 1, 5);
+
+	assert.deepEqual(result, {
+		text: [
+			'나는 "**안녕하세요**"라고 말했다.',
+			'```md',
+			'**"코드"**라고',
+			'```',
+			'(**오늘**)을 기록했다.',
+		].join('\n'),
+		replacements: 2,
 	});
 });

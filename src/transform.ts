@@ -76,6 +76,32 @@ export function transformMarkdownLine(
 	);
 }
 
+/**
+ * Transforms an inclusive range of physical lines. This is used for pasted
+ * content so the plugin avoids scanning or replacing the rest of the note.
+ */
+export function transformMarkdownLines(
+	source: MarkdownLineSource,
+	fromLine: number,
+	toLine: number,
+): TransformResult {
+	const firstLine = Math.max(0, Math.min(fromLine, toLine));
+	const lastLine = Math.min(source.lineCount() - 1, Math.max(fromLine, toLine));
+	if (firstLine > lastLine) {
+		return { text: '', replacements: 0 };
+	}
+
+	const output: string[] = [];
+	let replacements = 0;
+	for (let line = firstLine; line <= lastLine; line += 1) {
+		const result = transformMarkdownLine(source, line);
+		output.push(result.text);
+		replacements += result.replacements;
+	}
+
+	return { text: output.join('\n'), replacements };
+}
+
 function rewriteStrongSpans(
 	text: string,
 	protectedRanges: ProtectedRange[],

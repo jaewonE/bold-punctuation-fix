@@ -8,6 +8,8 @@ Bold Punctuation Fix is an Obsidian plugin that automatically repairs Markdown b
 
 - Automatically fixes only the edited line after a completed `**` delimiter or text immediately following it.
 - Waits 350 ms after relevant typing stops, without a command or a setting to enable the behavior.
+- Repairs the active Markdown document once when it opens, so existing punctuation-bound spans are corrected.
+- Repairs only the affected physical lines after a text paste, rather than rescanning the full note.
 - Moves leading and trailing punctuation outside an unsafe `**...**` span.
 - Converts `I said **"hello"** to everyone.` to `I said "**hello**" to everyone.`.
 - Supports ASCII, typographic, and CJK punctuation.
@@ -17,7 +19,7 @@ Bold Punctuation Fix is an Obsidian plugin that automatically repairs Markdown b
 
 ## How it works
 
-After relevant typing pauses, the plugin identifies literal, exact `**...**` spans on the active line outside protected Markdown regions. If either delimiter is unsafe because punctuation is adjacent to text, all movable boundary punctuation is placed outside the bold span. Only the inner text remains bold.
+When an active Markdown document opens, the plugin checks that document once. After relevant typing pauses, it checks only the active line; after a text paste, it checks only the pasted line range. In every case it identifies literal, exact `**...**` spans outside protected Markdown regions. If either delimiter is unsafe because punctuation is adjacent to text, all movable boundary punctuation is placed outside the bold span. Only the inner text remains bold.
 
 Examples:
 
@@ -40,11 +42,12 @@ Plan(**today**)
 ## Usage
 
 1. Enable Bold Punctuation Fix.
-2. Type a punctuation-bound bold span in a Markdown editor.
-3. Finish the closing `**`, or type text immediately after it.
-4. After 350 ms without relevant typing, review the automatic correction.
+2. Open an existing Markdown document to repair its punctuation-bound bold spans automatically.
+3. Type a punctuation-bound bold span and finish the closing `**`, or type text immediately after it.
+4. Paste text containing a punctuation-bound bold span to repair the affected lines immediately.
+5. After 350 ms without relevant typing, review the automatic correction.
 
-The plugin changes only the active editor line that triggered the correction. If a result is not wanted, use Obsidian's **Undo** immediately. The plugin recognizes that undo and does not immediately reapply the same correction. For important notes, retain your normal vault backup or version-history workflow before applying any text transformation.
+The plugin preserves the active cursor and selections when it applies a correction. If a result is not wanted, use Obsidian's **Undo** immediately. The plugin recognizes that undo and does not immediately reapply the same correction. For important notes, retain your normal vault backup or version-history workflow before applying any text transformation.
 
 ## Privacy and network access
 
@@ -53,7 +56,7 @@ Bold Punctuation Fix runs entirely locally.
 - It makes no network requests and uses no telemetry.
 - It does not read files outside the current vault.
 - It does not scan the vault or poll in the background.
-- It observes the active Markdown editor after relevant input and replaces only the affected line.
+- It checks only the active document when opened, the affected lines after a text paste, or the affected line after relevant input.
 - It stores no settings or note data; pending timers and undo guards are kept only in memory for open editors.
 
 ## Mobile and desktop support
