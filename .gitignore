@@ -1,0 +1,19 @@
+# VS Code
+.vscode
+
+# IntelliJ
+*.iml
+.idea
+
+# npm
+node_modules
+
+# Release artifacts
+main.js
+*.map
+
+# Obsidian runtime data
+data.json
+
+# macOS Finder metadata
+.DS_Store
